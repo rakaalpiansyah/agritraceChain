@@ -1,64 +1,57 @@
-# AgriTraceChain - Hyperledger Fabric Network & Caliper Benchmark
+# AgriTraceChain - Setup Fabric + Caliper dari Nol
 
-Dokumen ini adalah panduan resmi untuk menyiapkan environment pengembangan AgriTraceChain secara rapi, mulai dari persiapan Docker, bootstrap jaringan Hyperledger Fabric, deployment chaincode, hingga eksekusi benchmark dengan Hyperledger Caliper.
+Panduan ini fokus ke dua hal:
 
-## 1. Ringkasan Proyek
+1. Menjalankan project dari awal sampai benchmark jalan.
+2. Menunjukkan file mana yang perlu diubah kalau ingin mengubah data/skenario.
 
-AgriTraceChain menjalankan jaringan **Hyperledger Fabric 2.5** dengan:
+## 1. Ringkasan Arsitektur
 
-- **5 organisasi peer**: Farmer, Aggregator, Processor, Regulator, Buyer
-- **4 orderer node**
-- **1 channel utama**: `agritracechannel`
-- **4 smart contract**:
-  - `sc01-registration`
-  - `sc02-certification`
-  - `sc03-compliance`
-  - `sc04-lc-settlement`
-- **Benchmark engine**: Hyperledger Caliper
+AgriTraceChain memakai **Hyperledger Fabric 2.5**:
 
-## 2. Struktur Repository
+- 5 organisasi peer: Farmer, Aggregator, Processor, Regulator, Buyer
+- 4 orderer
+- 1 channel: `agritracechannel`
+- 4 chaincode: `sc01-registration`, `sc02-certification`, `sc03-compliance`, `sc04-lc-settlement`
+- Benchmark: Hyperledger Caliper
+
+## 2. Struktur Repo
 
 ```text
 agritrace-workspace/
 |-- agritrace-network/      # Konfigurasi Fabric, Docker Compose, script channel/deploy
 |-- chaincode/              # Source chaincode Go
-|-- caliper-workspace/      # Konfigurasi dan workload benchmark Caliper
-`-- fabric-bin/             # Binary Fabric (cryptogen/configtxgen) - siapkan manual
+|-- caliper-workspace/      # Konfigurasi benchmark Caliper
+`-- fabric-bin/             # Binary Fabric (cryptogen/configtxgen)
 ```
 
 ## 3. Prasyarat
 
-Pastikan komponen berikut tersedia:
+| Komponen | Minimal                                     |
+| -------- | ------------------------------------------- |
+| OS       | Windows 10/11, Linux, macOS                 |
+| Docker   | Docker Desktop aktif (Linux container mode) |
+| Node.js  | 18+                                         |
+| npm      | 9+                                          |
+| Python   | 3.10+                                       |
+| Git      | Terbaru                                     |
 
-| Komponen | Kebutuhan |
-|---|---|
-| OS | Windows 10/11, Linux, atau macOS |
-| Docker | Docker Desktop aktif, mode Linux container |
-| Node.js | v18+ |
-| npm | v9+ |
-| Python | v3.10+ |
-| Git | Versi terbaru |
+`agritrace-network\reset_crypto.py` membutuhkan binary:
 
-### Prasyarat tambahan Fabric
+- `cryptogen.exe`
+- `configtxgen.exe`
 
-Script `agritrace-network\reset_crypto.py` membutuhkan binary:
-
-- `cryptogen`
-- `configtxgen`
-
-Lokasi yang dipakai script:
+Lokasi yang diharapkan:
 
 ```text
 fabric-bin\fabric-samples\bin\
 ```
 
-Jika folder tersebut belum berisi binary Fabric, siapkan terlebih dahulu sebelum menjalankan reset.
+## 4. Setup dari Nol (Urutan Aman)
 
-## 4. Alur Setup End-to-End (Dari Nol)
+> Jalankan perintah dari root repo, kecuali disebutkan lain.
 
-> Jalankan perintah dari root repo, kecuali jika disebutkan folder spesifik.
-
-### 4.1 Generate ulang crypto material dan channel artifacts
+### 4.1 Generate ulang crypto + channel artifacts
 
 ```powershell
 cd .\agritrace-network
@@ -71,27 +64,20 @@ Output utama:
 - `agritrace-network\channel-artifacts\genesis.block`
 - `agritrace-network\channel-artifacts\channel.tx`
 
-### 4.2 Jalankan seluruh container Fabric
+### 4.2 Nyalakan jaringan Fabric
 
 ```powershell
 docker compose -f .\docker-compose.yaml up -d
-```
-
-Cek status:
-
-```powershell
 docker ps
 ```
 
-### 4.3 Buat channel dan join seluruh peer
+### 4.3 Buat channel + join semua peer
 
 ```powershell
 docker exec cli bash -c "cd /opt/gopath/src/github.com/hyperledger/fabric/peer && bash ./scripts/join_channel.sh"
 ```
 
-### 4.4 Deploy chaincode
-
-Jalankan dari host (masing-masing satu kali):
+### 4.4 Deploy semua chaincode
 
 ```powershell
 docker exec cli bash -c "cd /opt/gopath/src/github.com/hyperledger/fabric/peer && bash ./scripts/deploy_cc.sh"
@@ -100,65 +86,69 @@ docker exec cli bash -c "cd /opt/gopath/src/github.com/hyperledger/fabric/peer &
 docker exec cli bash -c "cd /opt/gopath/src/github.com/hyperledger/fabric/peer && bash ./scripts/deploy_sc04.sh"
 ```
 
-Setelah tahap ini, seluruh chaincode sudah terpasang dan siap dipakai benchmark.
+Sampai tahap ini, jaringan siap untuk benchmark.
 
-## 5. Setup dan Eksekusi Benchmark (Caliper)
-
-Masuk ke workspace benchmark:
+## 5. Menjalankan Benchmark Caliper
 
 ```powershell
 cd ..\caliper-workspace
 npm install
-```
-
-Generate connection profile:
-
-```powershell
 npm run profiles
-```
-
-Validasi sintaks workload:
-
-```powershell
 npm run lint:workloads
-```
-
-Jalankan benchmark final (direkomendasikan):
-
-```powershell
 npm run benchmark:paper
 ```
 
-Hasil report:
+Report hasil benchmark:
 
 ```text
 caliper-workspace\report.html
 ```
 
-## 6. Penjelasan Command Caliper
+## 6. Kalau Mau Ubah Data, Edit di Mana?
 
-| Perintah | Fungsi |
-|---|---|
-| `npm run profiles` | Generate ulang connection profile untuk seluruh organisasi |
-| `npm run lint:workloads` | Validasi sintaks file workload JavaScript |
-| `npm run test` | Menjalankan flow-only test Caliper |
-| `npm run debug:register-actor` | Debug 1 skenario transaksi `RegisterActor` |
-| `npm run benchmark` | Menjalankan benchmark eksperimen lengkap |
-| `npm run benchmark:paper` | Menjalankan benchmark final untuk pelaporan |
+| Tujuan Perubahan                                                             | File yang Diubah                                                                                                  |
+| ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Ubah logika bisnis smart contract                                            | `chaincode\sc01-registration\main.go`                                                                             |
+|                                                                              | `chaincode\sc02-certification\main.go`                                                                            |
+|                                                                              | `chaincode\sc03-compliance\main.go`                                                                               |
+|                                                                              | `chaincode\sc04-lc-settlement\main.go`                                                                            |
+| Ubah payload/data transaksi benchmark (contoh actor, batch, certificate, LC) | `caliper-workspace\workloads\registerActor.js`                                                                    |
+|                                                                              | `caliper-workspace\workloads\registerBatch.js`                                                                    |
+|                                                                              | `caliper-workspace\workloads\issueCertificate.js`                                                                 |
+|                                                                              | `caliper-workspace\workloads\recordCompliance.js`                                                                 |
+|                                                                              | `caliper-workspace\workloads\issueLC.js`                                                                          |
+|                                                                              | `caliper-workspace\workloads\settleLC.js`                                                                         |
+| Ubah jumlah transaksi, TPS, durasi round benchmark                           | `caliper-workspace\benchmarks\bench-config-paper.yaml`                                                            |
+| Ubah skenario benchmark eksperimen/debug                                     | `caliper-workspace\benchmarks\bench-config.yaml` dan `caliper-workspace\benchmarks\debug-register-actor.yaml`     |
+| Ubah profile koneksi Caliper ke Fabric                                       | `caliper-workspace\generate_profiles.py` dan folder `caliper-workspace\networks\`                                 |
+| Ubah topologi node/port/container Fabric                                     | `agritrace-network\docker-compose.yaml`                                                                           |
+| Ubah organisasi, MSP, channel profile                                        | `agritrace-network\crypto-config.yaml` dan `agritrace-network\configtx.yaml`                                      |
+| Ubah langkah join/deploy                                                     | `agritrace-network\scripts\join_channel.sh`, `deploy_cc.sh`, `deploy_sc02.sh`, `deploy_sc03.sh`, `deploy_sc04.sh` |
 
-## 7. Catatan Teknis Penting
+### Setelah ubah data/logic, jalankan ulang apa?
 
-1. Benchmark ini menggunakan `fabric-network@2.x` (bukan Fabric Gateway SDK baru).
-2. Jangan menambahkan flag `--caliper-fabric-gateway-enabled` untuk flow benchmark ini.
-3. Endorsement policy menggunakan mayoritas organisasi, sehingga transaksi write perlu target endorsement multi-peer.
+1. Jika ubah **workload Caliper** atau **bench config**: cukup jalankan ulang benchmark (`npm run benchmark:paper`).
+2. Jika ubah **chaincode**: jalankan ulang script deploy chaincode terkait.
+3. Jika ubah **config inti Fabric** (`crypto-config.yaml`, `configtx.yaml`, atau materi crypto): lakukan reset dari awal (`reset_crypto.py`, lalu `docker compose up`, join channel, deploy ulang).
 
-## 8. Troubleshooting Cepat
+## 7. Command Referensi Cepat
 
-| Masalah | Penyebab Umum | Tindakan |
-|---|---|---|
-| `no peer combination can satisfy the endorsement policy` | Peer target endorsement tidak sesuai policy / jaringan belum siap | Pastikan semua peer join channel, chaincode committed, dan script deploy selesai |
-| `spawn EPERM` (Windows) | Konflik permission/process lock | Jalankan dari PowerShell/Git Bash normal dan cek antivirus/file lock |
-| Round query gagal di benchmark eksperimen | Konfigurasi query handler belum final | Gunakan `npm run benchmark:paper` untuk hasil final |
+| Command                        | Fungsi                             |
+| ------------------------------ | ---------------------------------- |
+| `npm run profiles`             | Generate connection profile Fabric |
+| `npm run lint:workloads`       | Cek sintaks workload JavaScript    |
+| `npm run test`                 | Flow-only test Caliper             |
+| `npm run debug:register-actor` | Debug 1 skenario register actor    |
+| `npm run benchmark`            | Benchmark eksperimen               |
+| `npm run benchmark:paper`      | Benchmark final untuk pelaporan    |
+
+## 8. Troubleshooting Singkat
+
+| Error                                                    | Penyebab Umum                                       | Solusi                                                         |
+| -------------------------------------------------------- | --------------------------------------------------- | -------------------------------------------------------------- |
+| `no peer combination can satisfy the endorsement policy` | Target endorsement tidak cocok / network belum siap | Pastikan semua peer join channel dan chaincode sudah committed |
+| `spawn EPERM` di Windows                                 | Permission/process lock                             | Jalankan dari PowerShell normal dan cek antivirus/file lock    |
+| Query round gagal                                        | Konfigurasi query handler belum final               | Gunakan `npm run benchmark:paper` untuk hasil final            |
 
 ## 9. Shutdown dan Reset
 
@@ -169,13 +159,13 @@ cd ..\agritrace-network
 docker compose -f .\docker-compose.yaml down
 ```
 
-Matikan jaringan + hapus volume:
+Matikan + hapus volume:
 
 ```powershell
 docker compose -f .\docker-compose.yaml down -v
 ```
 
-Untuk reset penuh artifact Fabric, jalankan lagi:
+Reset penuh artifact Fabric:
 
 ```powershell
 python .\reset_crypto.py
