@@ -48,7 +48,7 @@ agritrace-workspace/
 Masuk ke folder Caliper:
 
 ```powershell
-cd D:\semester6\sister\agritrace-workspace\caliper-workspace
+cd \agritrace-workspace\caliper-workspace
 ```
 
 Install dependency:
