@@ -1,0 +1,129 @@
+name: AgriTrace Farmer Connection Profile
+version: "1.0"
+
+client:
+  organization: FarmerOrg
+
+organizations:
+  FarmerOrg:
+    mspid: FarmerMSP
+    peers:
+      - peer0.farmer.agritrace.com
+  AggregatorOrg:
+    mspid: AggregatorMSP
+    peers:
+      - peer0.aggregator.agritrace.com
+  ProcessorOrg:
+    mspid: ProcessorMSP
+    peers:
+      - peer0.processor.agritrace.com
+  RegulatorOrg:
+    mspid: RegulatorMSP
+    peers:
+      - peer0.regulator.agritrace.com
+  BuyerOrg:
+    mspid: BuyerMSP
+    peers:
+      - peer0.buyer.agritrace.com
+
+channels:
+  agritracechannel:
+    orderers:
+    - orderer1.agritrace.com
+    - orderer2.agritrace.com
+    - orderer3.agritrace.com
+    - orderer4.agritrace.com
+
+    peers:
+    peer0.farmer.agritrace.com:
+      endorsingPeer: true
+      chaincodeQuery: true
+      ledgerQuery: true
+      eventSource: true
+    peer0.aggregator.agritrace.com:
+      endorsingPeer: true
+      chaincodeQuery: true
+      ledgerQuery: true
+      eventSource: true
+    peer0.processor.agritrace.com:
+      endorsingPeer: true
+      chaincodeQuery: true
+      ledgerQuery: true
+      eventSource: true
+    peer0.regulator.agritrace.com:
+      endorsingPeer: true
+      chaincodeQuery: true
+      ledgerQuery: true
+      eventSource: true
+    peer0.buyer.agritrace.com:
+      endorsingPeer: true
+      chaincodeQuery: true
+      ledgerQuery: true
+      eventSource: true
+
+orderers:
+  orderer1.agritrace.com:
+    url: grpcs://localhost:7050
+    tlsCACerts:
+      path: ../agritrace-network/crypto-config/ordererOrganizations/agritrace.com/tlsca/tlsca.agritrace.com-cert.pem
+    grpcOptions:
+      ssl-target-name-override: orderer1.agritrace.com
+      hostnameOverride: orderer1.agritrace.com
+  orderer2.agritrace.com:
+    url: grpcs://localhost:8050
+    tlsCACerts:
+      path: ../agritrace-network/crypto-config/ordererOrganizations/agritrace.com/tlsca/tlsca.agritrace.com-cert.pem
+    grpcOptions:
+      ssl-target-name-override: orderer2.agritrace.com
+      hostnameOverride: orderer2.agritrace.com
+  orderer3.agritrace.com:
+    url: grpcs://localhost:9050
+    tlsCACerts:
+      path: ../agritrace-network/crypto-config/ordererOrganizations/agritrace.com/tlsca/tlsca.agritrace.com-cert.pem
+    grpcOptions:
+      ssl-target-name-override: orderer3.agritrace.com
+      hostnameOverride: orderer3.agritrace.com
+  orderer4.agritrace.com:
+    url: grpcs://localhost:10050
+    tlsCACerts:
+      path: ../agritrace-network/crypto-config/ordererOrganizations/agritrace.com/tlsca/tlsca.agritrace.com-cert.pem
+    grpcOptions:
+      ssl-target-name-override: orderer4.agritrace.com
+      hostnameOverride: orderer4.agritrace.com
+
+peers:
+  peer0.farmer.agritrace.com:
+    url: grpcs://localhost:7051
+    tlsCACerts:
+      path: ../agritrace-network/crypto-config/peerOrganizations/farmer.agritrace.com/tlsca/tlsca.farmer.agritrace.com-cert.pem
+    grpcOptions:
+      ssl-target-name-override: peer0.farmer.agritrace.com
+      hostnameOverride: peer0.farmer.agritrace.com
+  peer0.aggregator.agritrace.com:
+    url: grpcs://localhost:8051
+    tlsCACerts:
+      path: ../agritrace-network/crypto-config/peerOrganizations/aggregator.agritrace.com/tlsca/tlsca.aggregator.agritrace.com-cert.pem
+    grpcOptions:
+      ssl-target-name-override: peer0.aggregator.agritrace.com
+      hostnameOverride: peer0.aggregator.agritrace.com
+  peer0.processor.agritrace.com:
+    url: grpcs://localhost:9051
+    tlsCACerts:
+      path: ../agritrace-network/crypto-config/peerOrganizations/processor.agritrace.com/tlsca/tlsca.processor.agritrace.com-cert.pem
+    grpcOptions:
+      ssl-target-name-override: peer0.processor.agritrace.com
+      hostnameOverride: peer0.processor.agritrace.com
+  peer0.regulator.agritrace.com:
+    url: grpcs://localhost:10051
+    tlsCACerts:
+      path: ../agritrace-network/crypto-config/peerOrganizations/regulator.agritrace.com/tlsca/tlsca.regulator.agritrace.com-cert.pem
+    grpcOptions:
+      ssl-target-name-override: peer0.regulator.agritrace.com
+      hostnameOverride: peer0.regulator.agritrace.com
+  peer0.buyer.agritrace.com:
+    url: grpcs://localhost:11051
+    tlsCACerts:
+      path: ../agritrace-network/crypto-config/peerOrganizations/buyer.agritrace.com/tlsca/tlsca.buyer.agritrace.com-cert.pem
+    grpcOptions:
+      ssl-target-name-override: peer0.buyer.agritrace.com
+      hostnameOverride: peer0.buyer.agritrace.com

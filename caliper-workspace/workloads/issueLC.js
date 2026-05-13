@@ -23,6 +23,8 @@ class IssueLCWorkload extends WorkloadModuleBase {
             contractId: this.roundArguments.contractId,
             contractFunction: 'IssueLC',
             invokerMspId: 'BuyerMSP',
+            invokerIdentity: 'Admin',
+            targetPeers: ['peer0.buyer.agritrace.com', 'peer0.aggregator.agritrace.com', 'peer0.farmer.agritrace.com'],
             contractArguments: [lcId, `BUYER_${this.workerIndex}`, `FARMER_${this.txIndex}`, `BATCH_${this.txIndex}`, amount.toString(), 'IDR'],
             readOnly: false
         };

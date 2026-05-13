@@ -1,4 +1,4 @@
-import os
+from pathlib import Path
 
 orgs = [
     {"name": "farmer", "msp": "FarmerMSP", "peer_port": 7051},
@@ -6,6 +6,13 @@ orgs = [
     {"name": "processor", "msp": "ProcessorMSP", "peer_port": 9051},
     {"name": "regulator", "msp": "RegulatorMSP", "peer_port": 10051},
     {"name": "buyer", "msp": "BuyerMSP", "peer_port": 11051},
+]
+
+orderers = [
+    {"name": "orderer1.agritrace.com", "port": 7050},
+    {"name": "orderer2.agritrace.com", "port": 8050},
+    {"name": "orderer3.agritrace.com", "port": 9050},
+    {"name": "orderer4.agritrace.com", "port": 10050},
 ]
 
 # Build the peers block (all peers listed)
@@ -29,7 +36,32 @@ for org in orgs:
       - peer0.{org['name']}.agritrace.com
 """
 
-out_dir = "d:/semester6/sister/agritrace-workspace/caliper-workspace/networks"
+channel_peers_block = ""
+for org in orgs:
+    channel_peers_block += f"""    peer0.{org['name']}.agritrace.com:
+      endorsingPeer: true
+      chaincodeQuery: true
+      ledgerQuery: true
+      eventSource: true
+"""
+
+channel_orderers_block = ""
+for orderer in orderers:
+    channel_orderers_block += f"    - {orderer['name']}\n"
+
+orderers_block = ""
+for orderer in orderers:
+    orderers_block += f"""  {orderer['name']}:
+    url: grpcs://localhost:{orderer['port']}
+    tlsCACerts:
+      path: ../agritrace-network/crypto-config/ordererOrganizations/agritrace.com/tlsca/tlsca.agritrace.com-cert.pem
+    grpcOptions:
+      ssl-target-name-override: {orderer['name']}
+      hostnameOverride: {orderer['name']}
+"""
+
+out_dir = Path(__file__).resolve().parent / "networks"
+out_dir.mkdir(parents=True, exist_ok=True)
 
 for target_org in orgs:
     content = f"""name: AgriTrace {target_org['name'].capitalize()} Connection Profile
@@ -40,11 +72,19 @@ client:
 
 organizations:
 {orgs_block}
+channels:
+  agritracechannel:
+    orderers:
+{channel_orderers_block}
+    peers:
+{channel_peers_block}
+orderers:
+{orderers_block}
 peers:
 {peers_block}"""
 
-    filepath = os.path.join(out_dir, f"connectionProfile-{target_org['name']}.yaml")
-    with open(filepath, "w", newline="\\n") as f:
+    filepath = out_dir / f"connectionProfile-{target_org['name']}.yaml"
+    with open(filepath, "w", newline="\n") as f:
         f.write(content)
     print(f"  Created {filepath}")
 

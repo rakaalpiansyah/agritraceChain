@@ -1,6 +1,7 @@
 'use strict';
 
 const { WorkloadModuleBase } = require('@hyperledger/caliper-core');
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
 class QueryActorWorkload extends WorkloadModuleBase {
     constructor() {
@@ -22,10 +23,39 @@ class QueryActorWorkload extends WorkloadModuleBase {
                 contractId: this.roundArguments.contractId,
                 contractFunction: 'RegisterActor',
                 invokerMspId: 'FarmerMSP',
+                invokerIdentity: 'Admin',
+                targetPeers: ['peer0.farmer.agritrace.com', 'peer0.aggregator.agritrace.com', 'peer0.processor.agritrace.com'],
                 contractArguments: [actorId, `Petani-Query-${i}`, 'Farmer', 'Jawa Barat'],
                 readOnly: false
             };
             await this.sutAdapter.sendRequests(request);
+            await this.waitUntilActorExists(actorId);
+        }
+
+        await sleep(5000);
+    }
+
+    async waitUntilActorExists(actorId) {
+        const queryRequest = {
+            contractId: this.roundArguments.contractId,
+            contractFunction: 'GetActor',
+            invokerMspId: 'FarmerMSP',
+            invokerIdentity: 'Admin',
+            targetPeers: ['peer0.farmer.agritrace.com', 'peer0.aggregator.agritrace.com', 'peer0.processor.agritrace.com'],
+            contractArguments: [actorId],
+            readOnly: false
+        };
+
+        for (let attempt = 1; attempt <= 20; attempt++) {
+            try {
+                await this.sutAdapter.sendRequests(queryRequest);
+                return;
+            } catch (err) {
+                if (attempt === 20) {
+                    throw new Error(`Query actor ${actorId} was not visible after ${attempt} checks: ${err.message}`);
+                }
+                await sleep(500);
+            }
         }
     }
 
@@ -37,6 +67,7 @@ class QueryActorWorkload extends WorkloadModuleBase {
             contractId: this.roundArguments.contractId,
             contractFunction: 'GetActor',
             invokerMspId: 'FarmerMSP',
+            invokerIdentity: 'Admin',
             contractArguments: [actorId],
             readOnly: true
         };

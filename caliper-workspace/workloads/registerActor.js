@@ -25,6 +25,8 @@ class RegisterActorWorkload extends WorkloadModuleBase {
             contractId: this.roundArguments.contractId,
             contractFunction: 'RegisterActor',
             invokerMspId: 'FarmerMSP',
+            invokerIdentity: 'Admin',
+            targetPeers: ['peer0.farmer.agritrace.com', 'peer0.aggregator.agritrace.com', 'peer0.processor.agritrace.com'],
             contractArguments: [actorId, `Petani-${actorId}`, role, location],
             readOnly: false
         };

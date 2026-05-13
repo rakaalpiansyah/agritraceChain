@@ -22,7 +22,7 @@ organizations:
             path: "../agritrace-network/crypto-config/peerOrganizations/farmer.agritrace.com/users/Admin@farmer.agritrace.com/msp/signcerts/Admin@farmer.agritrace.com-cert.pem"
     connectionProfile:
       path: "./networks/connectionProfile-farmer.yaml"
-      discover: true
+      discover: false
 
   - mspid: AggregatorMSP
     identities:
@@ -34,7 +34,7 @@ organizations:
             path: "../agritrace-network/crypto-config/peerOrganizations/aggregator.agritrace.com/users/Admin@aggregator.agritrace.com/msp/signcerts/Admin@aggregator.agritrace.com-cert.pem"
     connectionProfile:
       path: "./networks/connectionProfile-aggregator.yaml"
-      discover: true
+      discover: false
 
   - mspid: ProcessorMSP
     identities:
@@ -46,7 +46,7 @@ organizations:
             path: "../agritrace-network/crypto-config/peerOrganizations/processor.agritrace.com/users/Admin@processor.agritrace.com/msp/signcerts/Admin@processor.agritrace.com-cert.pem"
     connectionProfile:
       path: "./networks/connectionProfile-processor.yaml"
-      discover: true
+      discover: false
 
   - mspid: RegulatorMSP
     identities:
@@ -58,7 +58,7 @@ organizations:
             path: "../agritrace-network/crypto-config/peerOrganizations/regulator.agritrace.com/users/Admin@regulator.agritrace.com/msp/signcerts/Admin@regulator.agritrace.com-cert.pem"
     connectionProfile:
       path: "./networks/connectionProfile-regulator.yaml"
-      discover: true
+      discover: false
 
   - mspid: BuyerMSP
     identities:
@@ -70,4 +70,4 @@ organizations:
             path: "../agritrace-network/crypto-config/peerOrganizations/buyer.agritrace.com/users/Admin@buyer.agritrace.com/msp/signcerts/Admin@buyer.agritrace.com-cert.pem"
     connectionProfile:
       path: "./networks/connectionProfile-buyer.yaml"
-      discover: true
+      discover: false

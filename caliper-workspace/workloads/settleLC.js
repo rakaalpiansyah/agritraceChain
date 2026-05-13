@@ -1,46 +1,47 @@
 'use strict';
 
 const { WorkloadModuleBase } = require('@hyperledger/caliper-core');
+
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-class RegisterBatchWorkload extends WorkloadModuleBase {
+class SettleLCWorkload extends WorkloadModuleBase {
     constructor() {
         super();
         this.txIndex = 0;
-        this.ownerIds = [];
+        this.lcIds = [];
     }
 
     async initializeWorkloadModule(workerIndex, totalWorkers, roundIndex, roundArguments, sutAdapter, sutContext) {
         await super.initializeWorkloadModule(workerIndex, totalWorkers, roundIndex, roundArguments, sutAdapter, sutContext);
         this.workerIndex = workerIndex;
 
-        for (let i = 0; i < 10; i++) {
-            const ownerId = `BATCH_OWNER_${workerIndex}_${roundIndex}_${i}_${Date.now()}`;
-            this.ownerIds.push(ownerId);
+        for (let i = 0; i < 100; i++) {
+            const lcId = `SETTLE_LC_${workerIndex}_${roundIndex}_${i}_${Date.now()}`;
 
             await this.sutAdapter.sendRequests({
                 contractId: this.roundArguments.contractId,
-                contractFunction: 'RegisterActor',
-                invokerMspId: 'FarmerMSP',
+                contractFunction: 'IssueLC',
+                invokerMspId: 'BuyerMSP',
                 invokerIdentity: 'Admin',
-                targetPeers: ['peer0.farmer.agritrace.com', 'peer0.aggregator.agritrace.com', 'peer0.processor.agritrace.com'],
-                contractArguments: [ownerId, `Owner-${ownerId}`, 'Farmer', 'Jawa Barat'],
+                targetPeers: ['peer0.buyer.agritrace.com', 'peer0.aggregator.agritrace.com', 'peer0.farmer.agritrace.com'],
+                contractArguments: [lcId, `BUYER_${workerIndex}`, `FARMER_${i}`, `BATCH_${i}`, '5000000', 'IDR'],
                 readOnly: false
             });
 
-            await this.waitUntilActorExists(ownerId);
+            await this.waitUntilLCExists(lcId);
+            this.lcIds.push(lcId);
         }
 
         await sleep(5000);
     }
 
-    async waitUntilActorExists(actorId) {
+    async waitUntilLCExists(lcId) {
         const queryRequest = {
             contractId: this.roundArguments.contractId,
-            contractFunction: 'GetActor',
-            invokerMspId: 'FarmerMSP',
+            contractFunction: 'GetLC',
+            invokerMspId: 'BuyerMSP',
             invokerIdentity: 'Admin',
-            contractArguments: [actorId],
+            contractArguments: [lcId],
             readOnly: true
         };
 
@@ -50,7 +51,7 @@ class RegisterBatchWorkload extends WorkloadModuleBase {
                 return;
             } catch (err) {
                 if (attempt === 20) {
-                    throw new Error(`Owner actor ${actorId} was not visible after ${attempt} checks: ${err.message}`);
+                    throw new Error(`LC ${lcId} was issued but not visible after ${attempt} checks: ${err.message}`);
                 }
                 await sleep(500);
             }
@@ -59,19 +60,19 @@ class RegisterBatchWorkload extends WorkloadModuleBase {
 
     async submitTransaction() {
         this.txIndex++;
-        const batchId = `BATCH_${this.workerIndex}_${this.txIndex}_${Date.now()}`;
-        const ownerId = this.ownerIds[this.txIndex % this.ownerIds.length];
-        const crops = ['Padi', 'Jagung', 'Kedelai', 'Kopi', 'Kelapa Sawit'];
-        const cropType = crops[this.txIndex % crops.length];
-        const quantity = (Math.floor(Math.random() * 1000) + 100);
+        const lcId = this.lcIds.shift();
+
+        if (!lcId) {
+            throw new Error('No pre-created LC is available to settle. Increase setup LC count or reduce round txNumber.');
+        }
 
         const request = {
             contractId: this.roundArguments.contractId,
-            contractFunction: 'RegisterBatch',
-            invokerMspId: 'FarmerMSP',
+            contractFunction: 'SettleLC',
+            invokerMspId: 'BuyerMSP',
             invokerIdentity: 'Admin',
-            targetPeers: ['peer0.farmer.agritrace.com', 'peer0.aggregator.agritrace.com', 'peer0.processor.agritrace.com'],
-            contractArguments: [batchId, ownerId, cropType, quantity.toString()],
+            targetPeers: ['peer0.buyer.agritrace.com', 'peer0.aggregator.agritrace.com', 'peer0.farmer.agritrace.com'],
+            contractArguments: [lcId],
             readOnly: false
         };
 
@@ -80,7 +81,7 @@ class RegisterBatchWorkload extends WorkloadModuleBase {
 }
 
 function createWorkloadModule() {
-    return new RegisterBatchWorkload();
+    return new SettleLCWorkload();
 }
 
 module.exports.createWorkloadModule = createWorkloadModule;

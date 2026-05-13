@@ -15,6 +15,10 @@ fabric-bin/
 # Environment variables & Secrets
 .env
 
+# Hyperledger Caliper generated reports
+caliper-workspace/report.html
+caliper-workspace/report-*.html
+
 # OS generated files
 .DS_Store
 Thumbs.db

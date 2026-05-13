@@ -1,0 +1,16 @@
+test:
+  name: AgriTrace-ID Debug RegisterActor
+  description: Minimal benchmark to expose the first Caliper/Fabric execution error
+  workers:
+    number: 1
+  rounds:
+    - label: debug-register-actor
+      txNumber: 1
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 1
+      workload:
+        module: workloads/registerActor.js
+        arguments:
+          contractId: sc01-registration

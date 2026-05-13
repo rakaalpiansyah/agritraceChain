@@ -23,6 +23,8 @@ class IssueCertificateWorkload extends WorkloadModuleBase {
             contractId: this.roundArguments.contractId,
             contractFunction: 'IssueCertificate',
             invokerMspId: 'RegulatorMSP',
+            invokerIdentity: 'Admin',
+            targetPeers: ['peer0.regulator.agritrace.com', 'peer0.aggregator.agritrace.com', 'peer0.farmer.agritrace.com'],
             contractArguments: [certId, 'REGULATOR_01', `BATCH_${this.txIndex}`, certType, '2027-12-31'],
             readOnly: false
         };

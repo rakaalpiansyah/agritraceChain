@@ -25,6 +25,8 @@ class RecordComplianceWorkload extends WorkloadModuleBase {
             contractId: this.roundArguments.contractId,
             contractFunction: 'RecordCompliance',
             invokerMspId: 'ProcessorMSP',
+            invokerIdentity: 'Admin',
+            targetPeers: ['peer0.processor.agritrace.com', 'peer0.aggregator.agritrace.com', 'peer0.farmer.agritrace.com'],
             contractArguments: [recordId, `BATCH_${this.txIndex}`, 'PROCESSOR_01', stage, status, `Check at stage ${stage}`],
             readOnly: false
         };

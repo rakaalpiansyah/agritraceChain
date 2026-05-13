@@ -4,7 +4,12 @@
   "description": "Hyperledger Caliper benchmark for AgriTrace-ID network",
   "private": true,
   "scripts": {
-    "test": "npx caliper launch manager --caliper-workspace ./ --caliper-networkconfig networks/networkConfig.yaml --caliper-benchconfig benchmarks/bench-config.yaml --caliper-flow-only-test --caliper-fabric-gateway-enabled"
+    "profiles": "python generate_profiles.py",
+    "lint:workloads": "node -c workloads/registerActor.js && node -c workloads/registerBatch.js && node -c workloads/queryActor.js && node -c workloads/issueCertificate.js && node -c workloads/recordCompliance.js && node -c workloads/issueLC.js && node -c workloads/settleLC.js && node -c workloads/workload.js",
+    "test": "npx caliper launch manager --caliper-workspace ./ --caliper-networkconfig networks/networkConfig.yaml --caliper-benchconfig benchmarks/bench-config.yaml --caliper-flow-only-test",
+    "debug:register-actor": "npx caliper launch manager --caliper-workspace ./ --caliper-networkconfig networks/networkConfig.yaml --caliper-benchconfig benchmarks/debug-register-actor.yaml --caliper-fabric-gateway-eventstrategy none --caliper-logging-level debug",
+    "benchmark": "npx caliper launch manager --caliper-workspace ./ --caliper-networkconfig networks/networkConfig.yaml --caliper-benchconfig benchmarks/bench-config.yaml --caliper-fabric-gateway-eventstrategy none",
+    "benchmark:paper": "npx caliper launch manager --caliper-workspace ./ --caliper-networkconfig networks/networkConfig.yaml --caliper-benchconfig benchmarks/bench-config-paper.yaml --caliper-fabric-gateway-eventstrategy none"
   },
   "devDependencies": {
     "@hyperledger/caliper-cli": "0.5.0",
@@ -12,6 +17,6 @@
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.6.7",
-    "@hyperledger/fabric-gateway": "^1.0.1"
+    "fabric-network": "^2.2.20"
   }
 }
