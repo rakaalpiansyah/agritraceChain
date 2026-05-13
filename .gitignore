@@ -1,7 +1,8 @@
 # Dependensi
 node_modules/
+**/node_modules/
 vendor/
-caliper-workspace/node_modules/
+**/vendor/
 
 # Hyperledger Fabric Generated Files
 agritrace-network/crypto-config/
