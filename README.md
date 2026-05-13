@@ -1,9 +1,33 @@
-# AgriTraceChain 
+# AgriTraceChain - Blockchain Traceability untuk Pertanian
+
+## Pengenalan Singkat
+
+**AgriTraceChain** adalah platform blockchain berbasis **Hyperledger Fabric** untuk mencatat perjalanan komoditas pertanian dari produsen (petani) sampai konsumen akhir (pembeli).
+
+### Tujuan Utama
+- **Transparansi supply chain**: Setiap tahap proses (registrasi → sertifikasi → kepatuhan → settlement) tercatat dan tidak bisa diubah.
+- **Multi-organisasi**: 5 pihak berbeda (Farmer, Aggregator, Processor, Regulator, Buyer) bisa collaborate dengan trust tanpa server pusat.
+- **Smart contract otomatis**: 4 chaincode menangani registrasi aktor, sertifikasi kualitas, pencatatan kepatuhan, dan settlement pembayaran (Letter of Credit).
+
+### Apa yang Bisa Dilakukan?
+1. **Menjalankan jaringan Fabric** dengan konfigurasi multi-organisasi.
+2. **Deploy chaincode** (smart contract) untuk logika bisnis pertanian.
+3. **Benchmark performa** dengan Caliper: mengukur throughput, latency, success rate transaksi.
+4. **Experiment skenario**: Ubah jumlah transaksi, payload data, atau logika bisnis sesuai kebutuhan research.
+
+### Contoh Alur
+- Petani (Farmer) registrasi batch komoditas → Aggregator terima & buat sertifikat → Processor catat kepatuhan → Regulator approve → Buyer bayar via Letter of Credit.
+
+---
+
+## Setup Guide
 
 Panduan ini fokus ke dua hal:
 
 1. Menjalankan project dari awal sampai benchmark jalan.
 2. Menunjukkan file mana yang perlu diubah kalau ingin mengubah data/skenario.
+
+---
 
 ## 1. Ringkasan Arsitektur
 
