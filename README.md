@@ -104,7 +104,55 @@ Report hasil benchmark:
 caliper-workspace\report.html
 ```
 
-## 6. Kalau Mau Ubah Data, Edit di Mana?
+## 6. Output yang Diharapkan (Biar Gak Bingung)
+
+### Saat `python .\reset_crypto.py`
+
+Minimal muncul indikator:
+
+```text
+=== Step 1: Removing old crypto-config ===
+=== Step 2: Generating fresh crypto material ===
+=== Step 5: Generating genesis block ===
+=== Step 6: Generating channel transaction ===
+=== DONE! All artifacts generated successfully. ===
+```
+
+### Saat `join_channel.sh`
+
+Minimal muncul:
+
+```text
+=== 1. Membuat Channel ===
+=== 2. Join Peer Farmer ===
+...
+=== 6. Join Peer Buyer ===
+=== Channel Join Berhasil! ===
+```
+
+### Saat deploy chaincode (`deploy_cc.sh`, `deploy_sc02.sh`, dst)
+
+Minimal tidak ada error fatal, lalu chaincode status committed bisa dicek dari container CLI:
+
+```powershell
+docker exec cli bash -c "peer lifecycle chaincode querycommitted -C agritracechannel"
+```
+
+### Saat `npm run benchmark:paper`
+
+Caliper akan menampilkan ringkasan round benchmark di terminal, dan menghasilkan file:
+
+```text
+caliper-workspace\report.html
+```
+
+Kalau run lebih dari sekali, biasanya report lama tertimpa. Jika ingin simpan banyak hasil, rename manual, misalnya:
+
+```text
+report-2026-05-13.html
+```
+
+## 7. Kalau Mau Ubah Data, Edit di Mana?
 
 | Tujuan Perubahan                                                             | File yang Diubah                                                                                                  |
 | ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
@@ -131,7 +179,7 @@ caliper-workspace\report.html
 2. Jika ubah **chaincode**: jalankan ulang script deploy chaincode terkait.
 3. Jika ubah **config inti Fabric** (`crypto-config.yaml`, `configtx.yaml`, atau materi crypto): lakukan reset dari awal (`reset_crypto.py`, lalu `docker compose up`, join channel, deploy ulang).
 
-## 7. Command Referensi Cepat
+## 8. Command Referensi Cepat
 
 | Command                        | Fungsi                             |
 | ------------------------------ | ---------------------------------- |
@@ -142,7 +190,7 @@ caliper-workspace\report.html
 | `npm run benchmark`            | Benchmark eksperimen               |
 | `npm run benchmark:paper`      | Benchmark final untuk pelaporan    |
 
-## 8. Troubleshooting Singkat
+## 9. Troubleshooting Singkat
 
 | Error                                                    | Penyebab Umum                                       | Solusi                                                         |
 | -------------------------------------------------------- | --------------------------------------------------- | -------------------------------------------------------------- |
@@ -150,7 +198,7 @@ caliper-workspace\report.html
 | `spawn EPERM` di Windows                                 | Permission/process lock                             | Jalankan dari PowerShell normal dan cek antivirus/file lock    |
 | Query round gagal                                        | Konfigurasi query handler belum final               | Gunakan `npm run benchmark:paper` untuk hasil final            |
 
-## 9. Shutdown dan Reset
+## 10. Shutdown dan Reset
 
 Matikan jaringan:
 
