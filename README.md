@@ -1,4 +1,4 @@
-# AgriTraceChain - Setup Fabric + Caliper dari Nol
+# AgriTraceChain 
 
 Panduan ini fokus ke dua hal:
 
