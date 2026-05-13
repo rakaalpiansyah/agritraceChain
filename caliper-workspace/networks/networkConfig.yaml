@@ -1,0 +1,73 @@
+name: AgriTrace Fabric Network
+version: "2.0.0"
+caliper:
+  blockchain: fabric
+
+channels:
+  - channelName: agritracechannel
+    contracts:
+      - id: sc01-registration
+      - id: sc02-certification
+      - id: sc03-compliance
+      - id: sc04-lc-settlement
+
+organizations:
+  - mspid: FarmerMSP
+    identities:
+      certificates:
+        - name: "Admin"
+          clientPrivateKey:
+            path: "../agritrace-network/crypto-config/peerOrganizations/farmer.agritrace.com/users/Admin@farmer.agritrace.com/msp/keystore/priv_sk"
+          clientSignedCert:
+            path: "../agritrace-network/crypto-config/peerOrganizations/farmer.agritrace.com/users/Admin@farmer.agritrace.com/msp/signcerts/Admin@farmer.agritrace.com-cert.pem"
+    connectionProfile:
+      path: "./networks/connectionProfile-farmer.yaml"
+      discover: true
+
+  - mspid: AggregatorMSP
+    identities:
+      certificates:
+        - name: "Admin"
+          clientPrivateKey:
+            path: "../agritrace-network/crypto-config/peerOrganizations/aggregator.agritrace.com/users/Admin@aggregator.agritrace.com/msp/keystore/priv_sk"
+          clientSignedCert:
+            path: "../agritrace-network/crypto-config/peerOrganizations/aggregator.agritrace.com/users/Admin@aggregator.agritrace.com/msp/signcerts/Admin@aggregator.agritrace.com-cert.pem"
+    connectionProfile:
+      path: "./networks/connectionProfile-aggregator.yaml"
+      discover: true
+
+  - mspid: ProcessorMSP
+    identities:
+      certificates:
+        - name: "Admin"
+          clientPrivateKey:
+            path: "../agritrace-network/crypto-config/peerOrganizations/processor.agritrace.com/users/Admin@processor.agritrace.com/msp/keystore/priv_sk"
+          clientSignedCert:
+            path: "../agritrace-network/crypto-config/peerOrganizations/processor.agritrace.com/users/Admin@processor.agritrace.com/msp/signcerts/Admin@processor.agritrace.com-cert.pem"
+    connectionProfile:
+      path: "./networks/connectionProfile-processor.yaml"
+      discover: true
+
+  - mspid: RegulatorMSP
+    identities:
+      certificates:
+        - name: "Admin"
+          clientPrivateKey:
+            path: "../agritrace-network/crypto-config/peerOrganizations/regulator.agritrace.com/users/Admin@regulator.agritrace.com/msp/keystore/priv_sk"
+          clientSignedCert:
+            path: "../agritrace-network/crypto-config/peerOrganizations/regulator.agritrace.com/users/Admin@regulator.agritrace.com/msp/signcerts/Admin@regulator.agritrace.com-cert.pem"
+    connectionProfile:
+      path: "./networks/connectionProfile-regulator.yaml"
+      discover: true
+
+  - mspid: BuyerMSP
+    identities:
+      certificates:
+        - name: "Admin"
+          clientPrivateKey:
+            path: "../agritrace-network/crypto-config/peerOrganizations/buyer.agritrace.com/users/Admin@buyer.agritrace.com/msp/keystore/priv_sk"
+          clientSignedCert:
+            path: "../agritrace-network/crypto-config/peerOrganizations/buyer.agritrace.com/users/Admin@buyer.agritrace.com/msp/signcerts/Admin@buyer.agritrace.com-cert.pem"
+    connectionProfile:
+      path: "./networks/connectionProfile-buyer.yaml"
+      discover: true

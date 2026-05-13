@@ -1,0 +1,17 @@
+{
+  "name": "agritrace-caliper",
+  "version": "1.0.0",
+  "description": "Hyperledger Caliper benchmark for AgriTrace-ID network",
+  "private": true,
+  "scripts": {
+    "test": "npx caliper launch manager --caliper-workspace ./ --caliper-networkconfig networks/networkConfig.yaml --caliper-benchconfig benchmarks/bench-config.yaml --caliper-flow-only-test --caliper-fabric-gateway-enabled"
+  },
+  "devDependencies": {
+    "@hyperledger/caliper-cli": "0.5.0",
+    "@hyperledger/caliper-fabric": "0.5.0"
+  },
+  "dependencies": {
+    "@grpc/grpc-js": "^1.6.7",
+    "@hyperledger/fabric-gateway": "^1.0.1"
+  }
+}

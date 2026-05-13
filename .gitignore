@@ -1,0 +1,19 @@
+# Dependensi
+node_modules/
+vendor/
+caliper-workspace/node_modules/
+
+# Hyperledger Fabric Generated Files
+agritrace-network/crypto-config/
+agritrace-network/channel-artifacts/
+agritrace-network/data/
+
+# Binaries & Samples bawaan Fabric
+fabric-bin/
+
+# Environment variables & Secrets
+.env
+
+# OS generated files
+.DS_Store
+Thumbs.db

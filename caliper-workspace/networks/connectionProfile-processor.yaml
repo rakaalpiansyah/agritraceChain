@@ -1,0 +1,20 @@
+name: AgriTrace Processor Connection Profile
+version: "1.0"
+
+client:
+  organization: ProcessorOrg
+
+organizations:
+  ProcessorOrg:
+    mspid: ProcessorMSP
+    peers:
+      - peer0.processor.agritrace.com
+
+peers:
+  peer0.processor.agritrace.com:
+    url: grpcs://localhost:9051
+    tlsCACerts:
+      path: ../agritrace-network/crypto-config/peerOrganizations/processor.agritrace.com/tlsca/tlsca.processor.agritrace.com-cert.pem
+    grpcOptions:
+      ssl-target-name-override: peer0.processor.agritrace.com
+      hostnameOverride: peer0.processor.agritrace.com

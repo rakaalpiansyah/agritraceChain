@@ -1,0 +1,20 @@
+name: AgriTrace Regulator Connection Profile
+version: "1.0"
+
+client:
+  organization: RegulatorOrg
+
+organizations:
+  RegulatorOrg:
+    mspid: RegulatorMSP
+    peers:
+      - peer0.regulator.agritrace.com
+
+peers:
+  peer0.regulator.agritrace.com:
+    url: grpcs://localhost:10051
+    tlsCACerts:
+      path: ../agritrace-network/crypto-config/peerOrganizations/regulator.agritrace.com/tlsca/tlsca.regulator.agritrace.com-cert.pem
+    grpcOptions:
+      ssl-target-name-override: peer0.regulator.agritrace.com
+      hostnameOverride: peer0.regulator.agritrace.com

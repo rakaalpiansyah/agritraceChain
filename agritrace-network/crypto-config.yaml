@@ -1,0 +1,50 @@
+# agritrace-network/crypto-config.yaml
+OrdererOrgs:
+  - Name: Orderer
+    Domain: agritrace.com
+    Specs:
+      - Hostname: orderer1
+      - Hostname: orderer2
+      - Hostname: orderer3
+      - Hostname: orderer4
+
+PeerOrgs:
+  - Name: FarmerOrg
+    Domain: farmer.agritrace.com
+    EnableNodeOUs: true
+    Template:
+      Count: 4
+    Users:
+      Count: 1
+
+  - Name: AggregatorOrg
+    Domain: aggregator.agritrace.com
+    EnableNodeOUs: true
+    Template:
+      Count: 4
+    Users:
+      Count: 1
+
+  - Name: ProcessorOrg
+    Domain: processor.agritrace.com
+    EnableNodeOUs: true
+    Template:
+      Count: 4
+    Users:
+      Count: 1
+
+  - Name: RegulatorOrg
+    Domain: regulator.agritrace.com
+    EnableNodeOUs: true
+    Template:
+      Count: 4
+    Users:
+      Count: 1
+
+  - Name: BuyerOrg
+    Domain: buyer.agritrace.com
+    EnableNodeOUs: true
+    Template:
+      Count: 4
+    Users:
+      Count: 1

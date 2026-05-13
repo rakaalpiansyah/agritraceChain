@@ -1,0 +1,181 @@
+# agritrace-network/configtx.yaml
+
+Organizations:
+  - &OrdererOrg
+    Name: OrdererOrg
+    ID: OrdererMSP
+    MSPDir: crypto-config/ordererOrganizations/agritrace.com/msp
+    Policies:
+      Readers: { Type: Signature, Rule: "OR('OrdererMSP.member')" }
+      Writers: { Type: Signature, Rule: "OR('OrdererMSP.member')" }
+      Admins:  { Type: Signature, Rule: "OR('OrdererMSP.admin')" }
+
+  - &FarmerOrg
+    Name: FarmerOrg
+    ID: FarmerMSP
+    MSPDir: crypto-config/peerOrganizations/farmer.agritrace.com/msp
+    Policies:
+      Readers: { Type: Signature, Rule: "OR('FarmerMSP.admin', 'FarmerMSP.peer', 'FarmerMSP.client')" }
+      Writers: { Type: Signature, Rule: "OR('FarmerMSP.admin', 'FarmerMSP.client')" }
+      Admins:  { Type: Signature, Rule: "OR('FarmerMSP.admin')" }
+      Endorsement: { Type: Signature, Rule: "OR('FarmerMSP.peer')" }
+
+  - &AggregatorOrg
+    Name: AggregatorOrg
+    ID: AggregatorMSP
+    MSPDir: crypto-config/peerOrganizations/aggregator.agritrace.com/msp
+    Policies:
+      Readers: { Type: Signature, Rule: "OR('AggregatorMSP.admin', 'AggregatorMSP.peer', 'AggregatorMSP.client')" }
+      Writers: { Type: Signature, Rule: "OR('AggregatorMSP.admin', 'AggregatorMSP.client')" }
+      Admins:  { Type: Signature, Rule: "OR('AggregatorMSP.admin')" }
+      Endorsement: { Type: Signature, Rule: "OR('AggregatorMSP.peer')" }
+
+  - &ProcessorOrg
+    Name: ProcessorOrg
+    ID: ProcessorMSP
+    MSPDir: crypto-config/peerOrganizations/processor.agritrace.com/msp
+    Policies:
+      Readers: { Type: Signature, Rule: "OR('ProcessorMSP.admin', 'ProcessorMSP.peer', 'ProcessorMSP.client')" }
+      Writers: { Type: Signature, Rule: "OR('ProcessorMSP.admin', 'ProcessorMSP.client')" }
+      Admins:  { Type: Signature, Rule: "OR('ProcessorMSP.admin')" }
+      Endorsement: { Type: Signature, Rule: "OR('ProcessorMSP.peer')" }
+
+  - &RegulatorOrg
+    Name: RegulatorOrg
+    ID: RegulatorMSP
+    MSPDir: crypto-config/peerOrganizations/regulator.agritrace.com/msp
+    Policies:
+      Readers: { Type: Signature, Rule: "OR('RegulatorMSP.admin', 'RegulatorMSP.peer', 'RegulatorMSP.client')" }
+      Writers: { Type: Signature, Rule: "OR('RegulatorMSP.admin', 'RegulatorMSP.client')" }
+      Admins:  { Type: Signature, Rule: "OR('RegulatorMSP.admin')" }
+      Endorsement: { Type: Signature, Rule: "OR('RegulatorMSP.peer')" }
+
+  - &BuyerOrg
+    Name: BuyerOrg
+    ID: BuyerMSP
+    MSPDir: crypto-config/peerOrganizations/buyer.agritrace.com/msp
+    Policies:
+      Readers: { Type: Signature, Rule: "OR('BuyerMSP.admin', 'BuyerMSP.peer', 'BuyerMSP.client')" }
+      Writers: { Type: Signature, Rule: "OR('BuyerMSP.admin', 'BuyerMSP.client')" }
+      Admins:  { Type: Signature, Rule: "OR('BuyerMSP.admin')" }
+      Endorsement: { Type: Signature, Rule: "OR('BuyerMSP.peer')" }
+
+Capabilities:
+  Channel: &ChannelCapabilities
+    V2_0: true
+  Orderer: &OrdererCapabilities
+    V2_0: true
+  Application: &ApplicationCapabilities
+    V2_5: true
+
+Channel: &ChannelDefaults
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+  Capabilities:
+    <<: *ChannelCapabilities
+
+Orderer: &OrdererDefaults
+  OrdererType: etcdraft
+  Addresses:
+    - orderer1.agritrace.com:7050
+    - orderer2.agritrace.com:8050
+    - orderer3.agritrace.com:9050
+    - orderer4.agritrace.com:10050
+  BatchTimeout: 2s
+  BatchSize:
+    MaxMessageCount: 100
+    AbsoluteMaxBytes: 10 MB
+    PreferredMaxBytes: 2 MB
+  EtcdRaft:
+    Consenters:
+      - Host: orderer1.agritrace.com
+        Port: 7050
+        ClientTLSCert: crypto-config/ordererOrganizations/agritrace.com/orderers/orderer1.agritrace.com/tls/server.crt
+        ServerTLSCert: crypto-config/ordererOrganizations/agritrace.com/orderers/orderer1.agritrace.com/tls/server.crt
+      - Host: orderer2.agritrace.com
+        Port: 8050
+        ClientTLSCert: crypto-config/ordererOrganizations/agritrace.com/orderers/orderer2.agritrace.com/tls/server.crt
+        ServerTLSCert: crypto-config/ordererOrganizations/agritrace.com/orderers/orderer2.agritrace.com/tls/server.crt
+      - Host: orderer3.agritrace.com
+        Port: 9050
+        ClientTLSCert: crypto-config/ordererOrganizations/agritrace.com/orderers/orderer3.agritrace.com/tls/server.crt
+        ServerTLSCert: crypto-config/ordererOrganizations/agritrace.com/orderers/orderer3.agritrace.com/tls/server.crt
+      - Host: orderer4.agritrace.com
+        Port: 10050
+        ClientTLSCert: crypto-config/ordererOrganizations/agritrace.com/orderers/orderer4.agritrace.com/tls/server.crt
+        ServerTLSCert: crypto-config/ordererOrganizations/agritrace.com/orderers/orderer4.agritrace.com/tls/server.crt
+  Organizations:
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+    BlockValidation:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+
+Application: &ApplicationDefaults
+  Organizations:
+  Policies:
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+    LifecycleEndorsement:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Endorsement"
+    Endorsement:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Endorsement"
+  Capabilities:
+    <<: *ApplicationCapabilities
+
+Profiles:
+  AgriTraceGenesis:
+    <<: *ChannelDefaults
+    Orderer:
+      <<: *OrdererDefaults
+      Organizations:
+        - *OrdererOrg
+      Capabilities:
+        <<: *OrdererCapabilities
+    Consortiums:
+      AgriTraceConsortium:
+        Organizations:
+          - *FarmerOrg
+          - *AggregatorOrg
+          - *ProcessorOrg
+          - *RegulatorOrg
+          - *BuyerOrg
+
+  AgriTraceChannel:
+    Consortium: AgriTraceConsortium
+    <<: *ChannelDefaults
+    Application:
+      <<: *ApplicationDefaults
+      Organizations:
+        - *FarmerOrg
+        - *AggregatorOrg
+        - *ProcessorOrg
+        - *RegulatorOrg
+        - *BuyerOrg
+      Capabilities:
+        <<: *ApplicationCapabilities

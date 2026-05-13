@@ -1,0 +1,81 @@
+test:
+  name: AgriTrace-ID Performance Benchmark
+  description: Benchmark throughput and latency for AgriTrace smart contracts on Hyperledger Fabric
+  workers:
+    number: 5
+  rounds:
+    # ===== SC01: REGISTRATION =====
+    - label: register-actor
+      description: Register new actors (Farmer entities)
+      txNumber: 500
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 50
+      workload:
+        module: workloads/registerActor.js
+        arguments:
+          contractId: sc01-registration
+
+    - label: register-batch
+      description: Register new agricultural batches
+      txNumber: 500
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 50
+      workload:
+        module: workloads/registerBatch.js
+        arguments:
+          contractId: sc01-registration
+
+    - label: query-actor
+      description: Query registered actors
+      txNumber: 500
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 100
+      workload:
+        module: workloads/queryActor.js
+        arguments:
+          contractId: sc01-registration
+
+    # ===== SC02: CERTIFICATION =====
+    - label: issue-certificate
+      description: Issue quality certificates (Regulator only)
+      txNumber: 300
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 30
+      workload:
+        module: workloads/issueCertificate.js
+        arguments:
+          contractId: sc02-certification
+
+    # ===== SC03: COMPLIANCE =====
+    - label: record-compliance
+      description: Record compliance checks during distribution
+      txNumber: 300
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 30
+      workload:
+        module: workloads/recordCompliance.js
+        arguments:
+          contractId: sc03-compliance
+
+    # ===== SC04: LC SETTLEMENT =====
+    - label: issue-lc
+      description: Issue Letter of Credit (Buyer only)
+      txNumber: 300
+      rateControl:
+        type: fixed-rate
+        opts:
+          tps: 30
+      workload:
+        module: workloads/issueLC.js
+        arguments:
+          contractId: sc04-lc-settlement

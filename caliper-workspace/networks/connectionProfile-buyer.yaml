@@ -1,0 +1,20 @@
+name: AgriTrace Buyer Connection Profile
+version: "1.0"
+
+client:
+  organization: BuyerOrg
+
+organizations:
+  BuyerOrg:
+    mspid: BuyerMSP
+    peers:
+      - peer0.buyer.agritrace.com
+
+peers:
+  peer0.buyer.agritrace.com:
+    url: grpcs://localhost:11051
+    tlsCACerts:
+      path: ../agritrace-network/crypto-config/peerOrganizations/buyer.agritrace.com/tlsca/tlsca.buyer.agritrace.com-cert.pem
+    grpcOptions:
+      ssl-target-name-override: peer0.buyer.agritrace.com
+      hostnameOverride: peer0.buyer.agritrace.com
