@@ -552,23 +552,3 @@ Reset crypto dan channel artifact:
 ```powershell
 python .\reset_crypto.py
 ```
-
-## 16. Rekomendasi Commit Git
-
-Commit message yang disarankan untuk perubahan dokumentasi dan benchmark:
-
-```text
-docs: add project setup and benchmark guide
-```
-
-Jika commit juga mencakup konfigurasi Caliper:
-
-```text
-feat(caliper): add paper-ready benchmark workflow
-```
-
-Jika ingin satu commit gabungan:
-
-```text
-docs: document AgriTrace setup and Caliper benchmark workflow
-```
